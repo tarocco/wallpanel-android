@@ -30,6 +30,9 @@ import android.view.ViewTreeObserver
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import xyz.wallpanel.app.AppExceptionHandler
 import xyz.wallpanel.app.network.MQTTOptions
@@ -267,9 +270,18 @@ abstract class BaseBrowserActivity : DaggerAppCompatActivity() {
                     or View.SYSTEM_UI_FLAG_FULLSCREEN
                     or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
             decorView?.systemUiVisibility = visibility
+            decorView?.also {
+                val wic = WindowCompat.getInsetsController(window, it)
+                wic.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                wic.hide(WindowInsetsCompat.Type.systemBars())
+            }
         } else if (hasFocus) {
             visibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_VISIBLE
             decorView?.systemUiVisibility = visibility
+            decorView?.also{
+                val wic = WindowCompat.getInsetsController(window, it)
+                wic.show(WindowInsetsCompat.Type.systemBars())
+            }
         }
     }
 
